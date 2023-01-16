@@ -4,16 +4,17 @@ let filter = getElement("filter");
 let todos = getElement("todos");
 let todo = getElement("todo");
 const liItems = document.getElementsByTagName("li");
-
-
+// let inp = document.getElementsByClassName("inpValue");
 
 
 
 //event listener 
 
 form.addEventListener("submit", addTodo);
-todos.addEventListener("click", removeTodo);
+todos.addEventListener("click", removeTodo );
+todos.addEventListener("click", editer);
 filter.addEventListener("keyup", SearchTodos);
+
 
 
 
@@ -24,15 +25,48 @@ filter.addEventListener("keyup", SearchTodos);
 let locSto = Object.keys(localStorage).sort();
 for(i=0;i<locSto.length;i++){
     let li = document.createElement('li');
-    li.className = "list-group-item"
-    li.innerText = localStorage.getItem(locSto[i]);
+    li.className = "list-group-item d-flex align-item-row";
+    li.value= locSto[i]
 
-    let deleteButton = document.createElement("button");
-    deleteButton.className = "btn btn-danger btn-sm delete";
-    deleteButton.value = locSto[i];
-    deleteButton.innerText = "delete";
-    li.append(deleteButton);
+    let input1 = document.createElement("input");
+    input1.className = "form-check-input";
+    input1.type = "checkbox";
+    li.appendChild(input1);
+    
+   
+
+    let innerContnt = document.createElement("div");
+    innerContnt.className="inpValue";
+    innerContnt.innerText = localStorage.getItem(locSto[i]);
+    li.append(innerContnt);
+    todo.value ="";
+
+
+    let input2 = document.createElement("input");
+    input2.className = "form-control d-none";
+    input2.type = "text";
+    li.append(input2);
+    
+
+
+    let editBtn = document.createElement("button");
+    editBtn.className = "btn btn-primary btn-sm edit";
+    editBtn.value = value="";
+    editBtn.innerText = "edit";
+    li.append(editBtn);
+
+
     todos.append(li)
+    // let li = document.createElement('li');
+    // li.className = "list-group-item"
+    // li.innerText = localStorage.getItem(locSto[i]);
+
+    // let deleteButton = document.createElement("button");
+    // deleteButton.className = "btn btn-danger btn-sm delete";
+    // deleteButton.value = locSto[i];
+    // deleteButton.innerText = "delete";
+    // li.append(deleteButton);
+    // todos.append(li)
 };
 function valOfBtn(j){
     locSto = Object.keys(localStorage).sort();
@@ -70,31 +104,50 @@ function addTodo(e){
     let newTodo = todo.value;
     if(newTodo === "") return;
     let li = document.createElement('li');
-    li.className = "list-group-item"
-    li.innerText = newTodo;
+    li.className = "list-group-item d-flex align-item-row";
+    li.value= valOfBtn(0)
+
+    let input1 = document.createElement("input");
+    input1.className = "form-check-input";
+    input1.type = "checkbox";
+    li.appendChild(input1);
+    
+   
+
+    let innerContnt = document.createElement("div");
+    innerContnt.className="inpValue";
+    innerContnt.innerText = newTodo;
+    li.append(innerContnt);
     todo.value ="";
 
-    let deleteButton = document.createElement("button");
-    deleteButton.className = "btn btn-danger btn-sm delete";
-    deleteButton.innerText = "delete";
-    deleteButton.value = valOfBtn(0);
-    li.append(deleteButton);
+
+    let input2 = document.createElement("input");
+    input2.className = "form-control d-none";
+    input2.type = "text";
+    li.append(input2);
+    
+
+
+    let editBtn = document.createElement("button");
+    editBtn.className = "btn btn-primary btn-sm edit";
+    editBtn.value = value="";
+    editBtn.innerText = "edit";
+    li.append(editBtn);
+
+
+
+
+    
     todos.append(li)
     localStorage.setItem(valOfBtn(0),newTodo)
     return;
 };
 
 function removeTodo(e){
-    if(e.target.classList.contains("delete")){
-        let result = confirm("are you sure?");
-        if(result){
+    if(e.target.checked){
             let li = e.target.parentElement;
             todos.removeChild(li);
-        }
-        else {
-            return;
-        } 
-        i = e.target.value;
+        i = e.target.parentElement.value;
         localStorage.removeItem(i);
         return;
    }
@@ -111,6 +164,28 @@ function SearchTodos(e){
     })
     return;
 }
+
+
+function editer(e){
+    let Div = e.target.previousElementSibling.previousElementSibling;
+        let inpbtn = e.target.previousElementSibling;
+    if(e.target.classList.contains("edit")){
+        Div.className = "d-none";
+        inpbtn.className = "form-control";
+        inpbtn.value = Div.innerText;
+        e.target.innerText = "add";
+        e.target.className = "btn btn-danger btn-sm add"
+    }
+    else if(e.target.classList.contains("add")){
+        Div.className="";
+        Div.innerText= inpbtn.value;
+        inpbtn.className="form-control d-none";
+        e.target.innerText = "edit";
+        e.target.className = "btn btn-primary btn-sm edit"
+    }
+    return;
+}
+
 
 // saving data in local storage
 
